@@ -1,9 +1,8 @@
 using System;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Hosting.Server;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.AspNet.SignalR.Tests
@@ -20,10 +19,8 @@ namespace Microsoft.AspNet.SignalR.Tests
 
         public static IServiceProvider CreateServiceProvider(Action<IServiceCollection> configure)
         {
-            var collection = new ServiceCollection();
-
-            var host = new WebHostBuilder(collection.BuildServiceProvider())
-                .UseServer(new ServerFactory())
+            var host = new WebHostBuilder()
+                .UseServer(new Server())
                 .UseStartup(
                     _ => { },
                     services =>
@@ -35,30 +32,18 @@ namespace Microsoft.AspNet.SignalR.Tests
             return host.Build().ApplicationServices;
         }
 
-        private class ServerFactory : IServerFactory
+        private class Server : IServer
         {
-            public IFeatureCollection Initialize(IConfiguration configuration)
+            IFeatureCollection IServer.Features { get; }
+            
+            public void Start(RequestDelegate requestDelegate)
             {
-                return null;
+
             }
 
-            public IDisposable Start(IFeatureCollection serverFeatures, Func<IFeatureCollection, Task> application)
+            public void Dispose()
             {
-                return new StartInstance(application);
-            }
 
-            private class StartInstance : IDisposable
-            {
-                private readonly Func<IFeatureCollection, Task> _application;
-
-                public StartInstance(Func<IFeatureCollection, Task> application)
-                {
-                    _application = application;
-                }
-
-                public void Dispose()
-                {
-                }
             }
         }
     }
