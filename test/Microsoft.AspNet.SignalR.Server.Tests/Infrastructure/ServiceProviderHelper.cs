@@ -19,24 +19,22 @@ namespace Microsoft.AspNet.SignalR.Tests
 
         public static IServiceProvider CreateServiceProvider(Action<IServiceCollection> configure)
         {
-            var host = new WebHostBuilder()
+            var builder = new WebApplicationBuilder()
                 .UseServer(new Server())
-                .UseStartup(
-                    _ => { },
-                    services =>
-                    {
-                        services.AddSignalR();
-                        configure(services);
-                        return services.BuildServiceProvider();
-                    });
-            return host.Build().ApplicationServices;
+                .Configure(_ => { })
+                .ConfigureServices(services =>
+                {
+                    services.AddSignalR();
+                    configure(services);
+                });
+            return builder.Build().Services;
         }
 
         private class Server : IServer
         {
             IFeatureCollection IServer.Features { get; }
             
-            public void Start(RequestDelegate requestDelegate)
+            public void Start<TContext>(IHttpApplication<TContext> application)
             {
 
             }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -218,7 +218,7 @@ namespace Microsoft.AspNet.SignalR.Tests.Hubs
             var mockHubManager = new Mock<IHubManager>();
             mockHubManager.Setup(m => m.GetHub("foo")).Returns(new HubDescriptor { Name = "foo", HubType = mockHub.Object.GetType() });
 
-            var serviceProvider = ServiceProviderHelper.CreateServiceProvider(services => services.AddInstance(mockHubManager.Object));
+            var serviceProvider = ServiceProviderHelper.CreateServiceProvider(services => services.AddSingleton(mockHubManager.Object));
 
             var dispatcher = new HubDispatcher(serviceProvider.GetRequiredService<IOptions<SignalROptions>>());
             var testContext = new TestContext("/ignorePath", new Dictionary<string, string>

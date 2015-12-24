@@ -15,7 +15,7 @@ using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Microsoft.AspNet.SignalR.Hubs
@@ -80,7 +80,7 @@ namespace Microsoft.AspNet.SignalR.Hubs
         {
             if (serviceProvider == null)
             {
-                throw new ArgumentNullException("resolver");
+                throw new ArgumentNullException(nameof(serviceProvider));
             }
 
             _proxyGenerator = _enableJavaScriptProxies ? serviceProvider.GetRequiredService<IJavaScriptProxyGenerator>()
